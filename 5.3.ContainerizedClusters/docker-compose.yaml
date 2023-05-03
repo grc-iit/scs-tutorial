@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  node1:
+    build: .
+    links:
+      - node2
+    networks:
+      - net
+    volumes:
+      - $HOME:$HOME
+    hostname: node1
+    stdin_open: true
+    tty: true
+
+  node2:
+    build: .
+    networks:
+      - net
+    volumes:
+      - $HOME:$HOME
+    hostname: node2
+    stdin_open: true
+    tty: true
+
+networks:
+  net:
+    driver: bridge
