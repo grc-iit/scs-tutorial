@@ -7,8 +7,6 @@ services:
       - node2
     networks:
       - net
-    volumes:
-      - $HOME:$HOME
     hostname: node1
     stdin_open: true
     tty: true
@@ -17,8 +15,6 @@ services:
     build: .
     networks:
       - net
-    volumes:
-      - $HOME:$HOME
     hostname: node2
     stdin_open: true
     tty: true
