@@ -7,23 +7,19 @@ project(MyFirstCMake)
 set(CMAKE_CXX_STANDARD 17)
 add_compile_options("-fPIC")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -fPIC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fPIC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -03")
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fPIC")
+  message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
 endif()
-
-#------------------------------------------------------------------------------
-# Version information
-#------------------------------------------------------------------------------
-set(VERSION_MAJOR "1")
-set(VERSION_MINOR "0")
 
 #------------------------------------------------------------------------------
 # Build options
 #------------------------------------------------------------------------------
-option(BUILD_TESTING "Use GOTCHA as IO interception tool" OFF)I" OFF)
+option(BUILD_TESTING "Build testing kits" OFF)
 
 #-----------------------------------------------------------------------------
 # Dependencies common to all subdirectories
