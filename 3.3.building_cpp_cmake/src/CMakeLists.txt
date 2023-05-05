@@ -1,52 +1,49 @@
-cmake_minimum_required (VERSION 3.10)
-project(MyFirstCMake)
+#------------------------------------------------------------------------------
+# Include Header Directories
+#------------------------------------------------------------------------------
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 #------------------------------------------------------------------------------
-# Compiler optimization
+# Build Database (DB) Library
 #------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 17)
-add_compile_options("-fPIC")
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -fPIC")
-elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fPIC")
-else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fPIC")
-endif()
+add_library(database_lib SHARED ${CMAKE_CURRENT_SOURCE_DIR}/database_lib.cc)
+target_link_libraries(database_lib
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${Boost_SYSTEM_LIBRARY})
 
 #------------------------------------------------------------------------------
-# Version information
+# Build Grocery DB
 #------------------------------------------------------------------------------
-set(VERSION_MAJOR "1")
-set(VERSION_MINOR "0")
+add_executable(grocery_db ${CMAKE_CURRENT_SOURCE_DIR}/grocery_db.cc)
+add_dependencies(grocery_db database_lib)
+target_link_libraries(grocery_db database_lib)
 
 #------------------------------------------------------------------------------
-# Build options
+# Build Movies DB
 #------------------------------------------------------------------------------
-option(BUILD_TESTING "Use GOTCHA as IO interception tool" OFF)I" OFF)
+add_executable(movies_db ${CMAKE_CURRENT_SOURCE_DIR}/movies_db.cc)
+add_dependencies(movies_db database_lib)
+target_link_libraries(movies_db database_lib)
+
+#------------------------------------------------------------------------------
+# Add libraries + executables to CMake install
+#------------------------------------------------------------------------------
+install(
+        TARGETS
+        database_lib
+        grocery_db
+        movies_db
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
 #-----------------------------------------------------------------------------
-# Dependencies common to all subdirectories
+# Add header file(s) to CMake Install
 #-----------------------------------------------------------------------------
-find_package(OpenMP REQUIRED COMPONENTS C CXX)
-find_package(Boost)
-
-#-----------------------------------------------------------------------------
-# Enable Testing
-#-----------------------------------------------------------------------------
-include(CTest)
-if(CMAKE_PROJECT_NAME STREQUAL MyFirstCMake AND BUILD_TESTING)
-  enable_testing()
-endif()
-
-#-----------------------------------------------------------------------------
-# Source
-#-----------------------------------------------------------------------------
-add_subdirectory(src)
-
-#-----------------------------------------------------------------------------
-# Testing Sources
-#-----------------------------------------------------------------------------
-if(CMAKE_PROJECT_NAME STREQUAL MyFirstCMake AND BUILD_TESTING)
-  add_subdirectory(test)
-endif()
+install(
+        FILES
+        ${CMAKE_SOURCE_DIR}/include/database_lib.h
+        DESTINATION
+        ${CMAKE_INSTALL_PREFIX}/include
+        COMPONENT
+        headers)

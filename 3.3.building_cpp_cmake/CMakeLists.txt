@@ -11,9 +11,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -03")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 else()
-  message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 
 #------------------------------------------------------------------------------
@@ -21,11 +21,20 @@ endif()
 #------------------------------------------------------------------------------
 option(BUILD_TESTING "Build testing kits" OFF)
 
+#------------------------------------------------------------------------------
+# Setup CMake Output Directories
+#------------------------------------------------------------------------------
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables.")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Libraries")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries.")
+
 #-----------------------------------------------------------------------------
 # Dependencies common to all subdirectories
 #-----------------------------------------------------------------------------
-find_package(OpenMP REQUIRED COMPONENTS C CXX)
-find_package(Boost)
+find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 #-----------------------------------------------------------------------------
 # Enable Testing
