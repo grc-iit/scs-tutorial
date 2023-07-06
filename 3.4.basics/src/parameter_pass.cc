@@ -2,33 +2,39 @@
 #include <iostream>
 
 // Data will be copied to the function
+// This can be expensive for large objects
 void GetSumByValue(std::string data) {
   int sum = 0;
-  for (char &c : data) {
+  for (const char &c : data) {
     sum += c;
   }
 }
 
 // Data will be passed by reference
-void GetSumByReference(std::string &data) {
+// This is more efficient than passing by value
+// data can be modified by the function
+void GetSumByLvalReference(std::string &data) {
   int sum = 0;
-  for (char &c : data) {
+  for (const char &c : data) {
     sum += c;
   }
 }
 
 // Data will be passed by reference
+// Same as above, but data cannot be modified by the function
 void GetSumByConstReference(const std::string &data) {
   int sum = 0;
-  for (char &c : data) {
+  for (const char &c : data) {
     sum += c;
   }
 }
 
-// Data will be moved to the function
-void GetSumByMove(std::string &&data) {
+// Data will be moved to the function without copying
+// The original data object is no longer valid after this function
+// NOTE: && is a single operator, not two ampersands.
+void GetSumByRvalReference(std::string &&data) {
   int sum = 0;
-  for (char &c : data) {
+  for (const char &c : data) {
     sum += c;
   }
 }
@@ -43,14 +49,14 @@ int main() {
   timer[0].Pause();
 
   timer[1].Resume();
-  GetSumByReference(data);
+  GetSumByLvalReference(data);
   timer[1].Pause();
 
   timer[2].Resume();
-  GetSumByMove(std::move(data));
+  GetSumByRvalReference(std::move(data));
   timer[2].Pause();
 
   std::cout << "By value: " << timer[0].GetUsec() << std::endl;
-  std::cout << "By reference: " << timer[1].GetUsec() << std::endl;
-  std::cout << "By move: " << timer[2].GetUsec() << std::endl;
+  std::cout << "By lval reference: " << timer[1].GetUsec() << std::endl;
+  std::cout << "By rval reference: " << timer[2].GetUsec() << std::endl;
 }
