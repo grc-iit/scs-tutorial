@@ -20,3 +20,9 @@ target_link_libraries(test_posix stdc++fs)
 #------------------------------------------------------------------------------
 add_executable(test_stdio ${CMAKE_CURRENT_SOURCE_DIR}/libstd.cc)
 target_link_libraries(test_stdio stdc++fs)
+
+#------------------------------------------------------------------------------
+# Build parameter pass test
+#------------------------------------------------------------------------------
+add_executable(test_parameter_pass ${CMAKE_CURRENT_SOURCE_DIR}/parameter_pass.cc)
+target_link_libraries(test_parameter_pass stdc++fs)
